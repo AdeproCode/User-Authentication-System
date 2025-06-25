@@ -1,6 +1,7 @@
 
 const express = require("express");
 const { handleUserLogin, handleUserRegistration, HandleGetAllUser } = require("../controller/authController");
+const authMiddleware = require("../middlewares");
 
 
 
@@ -17,7 +18,7 @@ router.post("/auth/login", handleUserLogin);
 
 
 // get all user
-router.get("/users", HandleGetAllUser);
+router.get("/users", authMiddleware, HandleGetAllUser);
 
 
 
