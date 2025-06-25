@@ -20,7 +20,7 @@ const authMiddleware = async (req, res, next) => {
         res.status(404).json({ message: "Please login" });
     }
 
-    const user = await Auth.findById(decodedToken.id);
+    const user = await Auth.findById(decodedToken.user._id);
     if (!user) {
         res.status(404).json({message: "No user account found"})
     }
