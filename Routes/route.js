@@ -1,8 +1,10 @@
 const authRoute = require("./authRoute");
+const blogRoute = require("./blogRoute");
 
 
 const routes = [
-    authRoute
+    authRoute,
+    blogRoute
 ]
 
 
