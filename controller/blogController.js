@@ -7,7 +7,7 @@ const handleBlogCreatetion = async (req, res) => {
     try {
         const { blogTitle, blogDescription, blogContent, blogImageUrl, blogVideoUrl, authorId } = req.body;
 
-        const user = await Blog.findById({ authorId });
+        const user = await Blog.findOne({ authorId });
         if (!user) {
             res.status(401).json({ message: "User not found" });
         }
