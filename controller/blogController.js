@@ -1,4 +1,5 @@
 
+const Auth = require("../models/authModel");
 const Blog = require("../models/blogModel");
 
 
@@ -7,7 +8,7 @@ const handleBlogCreatetion = async (req, res) => {
     try {
         const { blogTitle, blogDescription, blogContent, blogImageUrl, blogVideoUrl, authorId } = req.body;
 
-        const user = await Blog.findOne({ authorId });
+        const user = await Auth.findById(authorId);
         if (!user) {
             res.status(401).json({ message: "User not found" });
         }
@@ -17,7 +18,8 @@ const handleBlogCreatetion = async (req, res) => {
             blogDescription,
             blogContent,
             blogImageUrl,
-            blogVideoUrl
+            blogVideoUrl,
+            authorId
         });
         await createBlog.save();
 
@@ -123,7 +125,7 @@ const handleGetAllAuthors = async (req, res) => {
 try {
     const { authorId } = req.body
     
-    const authors = await Blog.find({ authorId });
+    const authors = await Blog.find(authorId);
     if (!authors) {
         res.status(404).json({ message: "No author found" });
     }
