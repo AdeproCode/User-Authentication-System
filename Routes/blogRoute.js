@@ -12,7 +12,7 @@ const router = express.Router();
 
 
 // user can register
-router.post("/blog/post", authMiddleware, handleBlogCreatetion);
+router.post("/blog/post", handleBlogCreatetion);
 
 router.get("/blog/posts", authMiddleware, handleGetAllBlogPost);
 
