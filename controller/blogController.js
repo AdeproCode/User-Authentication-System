@@ -89,8 +89,11 @@ const handleEditBlogPost = async (req, res) => {
 try {
     const blogPostId = req.params.id
 
-    const editedBlogPost = await Blog.findByIdAndUpdate(blogPostId, req.body, { new: true });
-    await editedBlogPost.save();
+    const editedBlogPost = await Blog.findByIdAndUpdate(blogPostId, req.body, { new: true, runValidators: true });
+
+    if (!editedBlogPost) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
 
     if (editedBlogPost) {
         res.status(201).json({
