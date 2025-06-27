@@ -6,7 +6,13 @@ const Blog = require("../models/blogModel");
 // to create a blog
 const handleBlogCreatetion = async (req, res) => {
     try {
-        const { blogTitle, blogDescription, blogContent, blogImageUrl, blogVideoUrl, authorId } = req.body;
+
+        const authorId = req.user?._id;
+
+        if (!authorId) {
+            return res.status(401).json({ message: "Unauthorized: Missing author ID" });
+        }
+        const { blogTitle, blogDescription, blogContent, blogImageUrl, blogVideoUrl } = req.body;
 
         const user = await Auth.findById(authorId);
         if (!user) {
@@ -60,7 +66,7 @@ try {
 const handleGetBlogPostById = async (req, res) => {
   try {
     
-      const { blogPostId } = req.params.id;
+      const blogPostId = req.params.id;
 
       const blogPost = await Blog.findById(blogPostId);
       if (!blogPost) {
@@ -81,9 +87,9 @@ const handleGetBlogPostById = async (req, res) => {
 // edit a blog post
 const handleEditBlogPost = async (req, res) => {
 try {
-    const edit = req.body
+    const blogPostId = req.params.id
 
-    const editedBlogPost = await Blog.findByIdAndUpdate(req.blog.id, edit, { new: true });
+    const editedBlogPost = await Blog.findByIdAndUpdate(blogPostId, req.body, { new: true });
     await editedBlogPost.save();
 
     if (editedBlogPost) {
@@ -103,9 +109,9 @@ try {
 // delete a blog post
 const handleDeleteBlogPost = async (req, res) => {
   try {
-      const deleteBlogPost = req.params.id;
+      const deleteBlogPostId = req.params.id;
 
-      const deletedBlogPost = await Blog.findByIdAndDelete(req.blog.id, deleteBlogPost);
+      const deletedBlogPost = await Blog.findByIdAndDelete(deleteBlogPostId, req.body);
 
       if (deletedBlogPost) {
           
@@ -123,11 +129,11 @@ const handleDeleteBlogPost = async (req, res) => {
 // get all authors
 const handleGetAllAuthors = async (req, res) => {
 try {
-    const { authorId } = req.body
-    
-    const authors = await Blog.find(authorId);
-    if (!authors) {
-        res.status(404).json({ message: "No author found" });
+    const authorIds = await Blog.distinct("authorId");
+
+    const authors = await Auth.find({ _id: { $in: authorIds } });
+    if (!authors || authors.length === 0) {
+      return res.status(404).json({ message: "No authors found" });
     }
 
     res.status(200).json({
